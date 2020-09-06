@@ -1,6 +1,11 @@
 import images from './gallery-items.js';
-// console.log(images);
+
 const ulRef = document.querySelector('.js-gallery');
+const overlayRef = document.querySelector('.lightbox__content');
+const overRef = document.querySelector('.lightbox');
+const imgOverRef = document.querySelector('.lightbox__image');
+const closeBtn = overRef.querySelector('button[data-action="close-lightbox"]');
+
 const createLi = image => {
   const ref = {
       ul: document.querySelector('.js-gallery'),
@@ -19,32 +24,53 @@ const createLi = image => {
   // const data = data-source;                     // ???   // 'button[data-action="render"]'
   ref.a.appendChild(ref.img);
   ref.li.appendChild(ref.a);
-  // console.log(ref.li);
   return ref.li;
 };
 const arrLi = images.map(image => createLi(image));
-// console.log(arrLi);
 ulRef.append(...arrLi);
-// console.log(ulRef);
 
-const overRef = document.querySelector('.lightbox');
-const imgOverRef = document.querySelector('.lightbox__image');
-const closeBtn = overRef.querySelector('button[data-action="close-lightbox"]');
-// console.log(closeBtn);
-
-const closeModal = () => {
-  overRef.classList.remove('is-open');
-  imgOverRef.src = '';
-}
-const clickHandler = (event) => {
+const openModal = () => {
   event.preventDefault();
   if (event.target.nodeName !== 'IMG') {  
     return;
   }
-  console.log(event.target);
-  console.log(event.target.alt);
   overRef.classList.add('is-open');
   imgOverRef.src = event.target.alt;
-  closeBtn.addEventListener('click', closeModal);
+  window.addEventListener('keydown', escCloseModal); // - чи є різниця в якому місці зареєстрований слухач? 
+  window.addEventListener('keydown', onNextImage);   // - куди краще повісити? чи треба знімати?
 }
-ulRef.addEventListener('click', clickHandler)
+const closeModal = () => {
+  overRef.classList.remove('is-open');
+  imgOverRef.src = '';
+  window.removeEventListener('keydown', escCloseModal);
+}
+const escCloseModal = event => {
+  if (event.code === 'Escape') {
+    closeModal();
+  }
+}                                   // - чому після Ескейпа доводиться клікати на імедж двічі?
+const onBackClick = event => {
+  if (event.target === event.currentTarget) {
+    closeModal();
+  }
+}
+
+ulRef.addEventListener('click', openModal)
+closeBtn.addEventListener('click', closeModal);
+overlayRef.addEventListener('click', onBackClick);
+
+// Пролистывание изображений галереи в открытом модальном окне 
+// клавишами "влево" и "вправо".
+
+const onNextImage = event => {
+  console.log(event.code);
+  for (let i=0; i<images.length; ) {
+
+    if (event.code === 'ArrowLeft') {
+      imgOverRef.src = images[i-1].alt;
+      // if (event.code === 'ArrowRight') {
+        // imgOverRef.src = images[i+1].alt;
+        //   closeModal();
+      }
+  }
+}
