@@ -62,15 +62,15 @@ overlayRef.addEventListener('click', onBackClick);
 // Пролистывание изображений галереи в открытом модальном окне 
 // клавишами "влево" и "вправо".
 
-const onNextImage = event => {
-  console.log(event.code);
-  for (let i=0; i<images.length; ) {
+// const onNextImage = event => {
+//   console.log(event.code);
+//   for (let i=0; i<images.length; ) {
 
-    if (event.code === 'ArrowLeft') {
-      imgOverRef.src = images[i-1].alt;
-      // if (event.code === 'ArrowRight') {
-        // imgOverRef.src = images[i+1].alt;
-        //   closeModal();
-      }
-  }
-}
+//     if (event.code === 'ArrowLeft') {
+//       imgOverRef.src = images[i-1].alt;
+//       // if (event.code === 'ArrowRight') {
+//         // imgOverRef.src = images[i+1].alt;
+//         //   closeModal();
+//       }
+//   }
+// }
