@@ -24,22 +24,17 @@ const createLi = (image, index) => {
   ref.img.alt = image.description;
   ref.a.appendChild(ref.img);
   ref.li.appendChild(ref.a);
-  console.log(ref.li);
   return ref.li;
 };
-
 const arrLi = images.map((image, index) => createLi(image, index));
 ulRef.append(...arrLi);
 
 const openModal = () => {
   event.preventDefault();
-  if (event.target.nodeName !== 'IMG') {  
-    return;
-  }
+  if (event.target.nodeName !== 'IMG') return;
   overRef.classList.add('is-open');
   imgOverRef.src = event.target.dataset.source;
   currentId = Number(event.target.dataset.index);
-  console.log(currentId);
   window.addEventListener('keydown', onKeyPress);
 }
 const closeModal = () => {
@@ -47,39 +42,42 @@ const closeModal = () => {
   imgOverRef.src = '';
   window.removeEventListener('keydown', onKeyPress);
 }
+const prevImage = () => {
+  if (currentId > 0 && currentId <= images.length-1) {
+    currentId -= 1;
+    imgOverRef.src = images[currentId].original;
+  } else if (currentId === 0) {
+    currentId = images.length-1;
+    imgOverRef.src = images[currentId].original;
+  }
+}
+const nextImage = () => {
+  if (currentId >= 0 && currentId < images.length-1) {
+    currentId += 1;
+    imgOverRef.src = images[currentId].original;
+  } else if (currentId = images.length-1) {
+    currentId = 0;
+    imgOverRef.src = images[currentId].original;
+  }
+
+}
 const onKeyPress = event => {
   if (event.code === 'Escape') {
     closeModal();
   }
   if (event.code === 'ArrowLeft') {
-    if (currentId > 0 && currentId <= images.length-1) {
-      currentId -= 1;
-      console.log(currentId);
-      imgOverRef.src = images[currentId].original;
-    } else if (currentId === 0) {
-      currentId = images.length-1;
-      console.log(currentId);
-      imgOverRef.src = images[currentId].original;
-    }
+    prevImage();
   }
-  if (event.code === 'ArrowRight') {
-    if (currentId >= 0 && currentId < images.length-1) {
-      currentId += 1;
-      console.log(currentId);
-      imgOverRef.src = images[currentId].original;
-    } else if (currentId = images.length-1) {
-      currentId = 0;
-      console.log(currentId);
-      imgOverRef.src = images[currentId].original;
-    }
+  if (event.code === 'ArrowRight' || event.code === 'Space') {
+    nextImage();
   }
-}                                                  // - чому після Ескейпа доводиться клікати на імедж двічі?
+}
 const onBackClick = event => {
   if (event.target === event.currentTarget) {
     closeModal();
   }
 }
 
-ulRef.addEventListener('click', openModal)
+ulRef.addEventListener('click', openModal);
 closeBtn.addEventListener('click', closeModal);
 overlayRef.addEventListener('click', onBackClick);
